@@ -1,0 +1,156 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://Actors/Enemies/Enemy.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Actors/Enemies/Pigs/Sprites/Pig_v1_2.png" type="Texture" id=2]
+[ext_resource path="res://Actors/StateMachine/States/Walk.gd" type="Script" id=3]
+[ext_resource path="res://Actors/Enemies/Pigs/EnemyPig.gd" type="Script" id=4]
+[ext_resource path="res://Actors/StateMachine/States/AirborneState.gd" type="Script" id=5]
+[ext_resource path="res://Actors/StateMachine/States/FallState.gd" type="Script" id=6]
+[ext_resource path="res://Actors/StateMachine/States/StunnedState.gd" type="Script" id=7]
+
+[sub_resource type="Animation" id=1]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "stunned"
+length = 0.1
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 4 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "walk"
+length = 0.6
+loop = true
+step = 0.15
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 6, 4 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 6, 4 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 9, 6.5 )
+
+[node name="EnemyPig" instance=ExtResource( 1 )]
+modulate = Color( 1, 1, 1, 1 )
+collision_layer = 2
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true
+}
+max_speed = 15
+move_speed = 50
+move_speed_air = 0
+friction = 3
+loot_table = "res://Actors/Enemies/LootSpawner/LootTables/Level1/PigLvl1.tres"
+
+[node name="StateMachine" parent="." index="0"]
+states = {
+"air": NodePath("AirborneState"),
+"dead": NodePath("DeadState"),
+"fall": NodePath("FallState"),
+"idle": NodePath("WalkState"),
+"jump": NodePath(""),
+"stunned": NodePath("StunnedState"),
+"walk": NodePath("WalkState")
+}
+start_state = NodePath("WalkState")
+
+[node name="WalkState" type="Node" parent="StateMachine" index="0"]
+script = ExtResource( 3 )
+animation_name = "walk"
+
+[node name="AirborneState" type="Node" parent="StateMachine" index="1"]
+script = ExtResource( 5 )
+animation_name = "stunned"
+
+[node name="FallState" type="Node" parent="StateMachine" index="2"]
+script = ExtResource( 6 )
+animation_name = "stunned"
+
+[node name="StunnedState" type="Node" parent="StateMachine" index="3"]
+script = ExtResource( 7 )
+animation_name = "stunned"
+
+[node name="AnimationPlayer" parent="." index="1"]
+anims/RESET = SubResource( 1 )
+anims/stunned = SubResource( 6 )
+anims/walk = SubResource( 2 )
+
+[node name="CollisionShape2D" parent="." index="2"]
+position = Vector2( -1, 4 )
+shape = SubResource( 3 )
+
+[node name="Sprite" parent="." index="3"]
+texture = ExtResource( 2 )
+flip_h = true
+hframes = 5
+
+[node name="WallDetect" type="RayCast2D" parent="." index="4"]
+position = Vector2( 5, 3 )
+enabled = true
+cast_to = Vector2( 1, 0 )
+
+[node name="CliffDetect" type="RayCast2D" parent="." index="5"]
+position = Vector2( 6, 7 )
+enabled = true
+cast_to = Vector2( 0, 2 )
+
+[node name="CollisionShape2D" parent="HitBox" index="0"]
+position = Vector2( -1, 4 )
+shape = SubResource( 4 )
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2( 0, 2.5 )
+shape = SubResource( 5 )
+
+[editable path="HitBox"]
+[editable path="HurtBox"]

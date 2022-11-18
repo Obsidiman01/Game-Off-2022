@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Playe_spritesheet_1.png-9683e412a98705bc42f515992672718f.stex"
+path="res://.import/Player_bag_spritesheet_1.png-8e9e373a56e22a81068defd577ef3ba3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Player/Sprites/Playe_spritesheet_1.png"
-dest_files=[ "res://.import/Playe_spritesheet_1.png-9683e412a98705bc42f515992672718f.stex" ]
+source_file="res://Actors/Player/Sprites/Player_bag_spritesheet_1.png"
+dest_files=[ "res://.import/Player_bag_spritesheet_1.png-8e9e373a56e22a81068defd577ef3ba3.stex" ]
 
 [params]
 
